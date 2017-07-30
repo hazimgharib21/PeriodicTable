@@ -1,68 +1,40 @@
 int latchColPin = 53;
 int clockColPin = 51;
 int dataColPin = 52;
-int latchRowPin = 22;
-int clockRowPin = 24;
-int dataRowPin = 23;
-int ledPin = 50;
+int ledPin = 10;
+int ledPin2 = 11;
 
 byte data = 0;
 int currentLED = 0;
-
-unsigned long previousMillis = 0;
-const long interval = 25;
-int ledState = LOW;
 
 uint8_t outputPin[] = {
   
   latchColPin,
   clockColPin,
   dataColPin,
-  latchRowPin,
-  clockRowPin,
-  dataColPin,
+  ledPin,
+  ledPin2,
   };
 
 void setup() {
 
   initOutput();
-
+  digitalWrite(ledPin, HIGH);
+  digitalWrite(ledPin2, LOW);
 }
 
 void loop() {
 
-  unsigned long currentMillis = millis();
-
-  if(currentMillis - previousMillis >= interval){
-
-    previousMillis = currentMillis;
-
-    if(ledState == LOW){
-      ledState = HIGH;
-    }else{
-      ledState = LOW;
-    }
-
-    digitalWrite(ledPin, ledState);
-  }
 
   data = 0;
 
-  if(currentLED == 7){
-    currentLED = 0;
-  }else{
-    currentLED++;
-  }
+  currentLED = random(8);
 
   bitSet(data, currentLED);
 
   digitalWrite(latchColPin, LOW);
-  shiftOut(dataColPin, clockColPin, LSBFIRST, 255);
+  shiftOut(dataColPin, clockColPin, LSBFIRST, data);
   digitalWrite(latchColPin, HIGH);
-
-  digitalWrite(latchRowPin, LOW);
-  shiftOut(dataRowPin, clockRowPin, LSBFIRST, 255);
-  digitalWrite(latchRowPin, HIGH);
 
   delay(25);
 
